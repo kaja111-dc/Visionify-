@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visionify</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+    header {
+      background-color: purple;
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      background-color: #111;
+      padding: 1rem;
+    }
+    nav a {
+      color: pink;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      padding: 2rem;
+    }
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .image-card {
+      position: relative;
+    }
+    .image-card img {
+      width: 100%;
+      height: auto;
+      border: 2px solid pink;
+      border-radius: 8px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .upload-box, .ai-box {
+      background-color: #111;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      background-color: purple;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .preview {
+      margin-top: 1rem;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>Visionify</header>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#upload">Upload</a>
+    <a href="#ai">AI Studio</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <section id="home">
+    <h2>Welcome to Visionify</h2>
+    <p>Explore and share stunning high-resolution images. Let your creativity flow with our AI tools.</p>
+  </section>
+
+  <section id="gallery">
+    <h2>Gallery</h2>
+    <div class="image-grid" id="gallery-grid">
+      <!-- Dynamically added images will appear here -->
+    </div>
+  </section>
+
+  <section id="upload">
+    <h2>Upload Your Image</h2>
+    <div class="upload-box">
+      <input type="file" accept="image/*" onchange="handleUpload(event)" />
+      <img id="upload-preview" class="preview" style="display:none" />
+    </div>
+  </section>
+
+  <section id="ai">
+    <h2>AI Studio</h2>
+    <div class="ai-box">
+      <h3>Create from Imagination</h3>
+      <textarea id="prompt" placeholder="Describe your dream image..."></textarea>
+      <button onclick="generateAIImage()">Generate Image</button>
+      <img id="ai-image" class="preview" style="display:none" />
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Visionify</h2>
+    <p>Visionify is a creative platform where photography meets AI. Upload, edit, or generate amazing images with ease — and all in high resolution.</p>
+  </section>
+
+  <script>
+    let likeCount = {};
+
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        const imgURL = reader.result;
+        document.getElementById('upload-preview').src = imgURL;
+        document.getElementById('upload-preview').style.display = 'block';
+        addToGallery(imgURL);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addToGallery(imgURL) {
+      const gallery = document.getElementById('gallery-grid');
+      const card = document.createElement('div');
+      card.className = 'image-card';
+      card.innerHTML = `
+        <img src="${imgURL}" alt="User Upload" />
+        <div class="buttons">
+          <button onclick="likeImage('${imgURL}')">Like (<span id="like-${imgURL}">0</span>)</button>
+          <button onclick="alert('Wallpaper set (simulated)')">Set as Wallpaper</button>
+        </div>
+      `;
+      gallery.prepend(card);
+      likeCount[imgURL] = 0;
+    }
+
+    function likeImage(url) {
+      likeCount[url] += 1;
+      document.getElementById(`like-${url}`).textContent = likeCount[url];
+    }
+
+    function generateAIImage() {
+      const prompt = document.getElementById('prompt').value;
+      const img = document.getElementById('ai-image');
+      img.src = 'https://via.placeholder.com/800x600.png?text=' + encodeURIComponent(prompt);
+      img.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
